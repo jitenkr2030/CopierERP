@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-bell"></i> Notifications</h3>
+  <div>
+    <a href="{% url 'notifications:notification_generate' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-clockwise"></i> Generate</a>
+    <form method="post" action="{% url 'notifications:notification_read_all' %}" class="d-inline">
+      {% csrf_token %}
+      <button class="btn btn-outline-success btn-sm"><i class="bi bi-check2-all"></i> Mark all read</button>
+    </form>
+  </div>
+</div>
+<ul class="list-group">{% for n in notifications %}
+  <li class="list-group-item d-flex justify-content-between {{ n.is_read|yesno:",list-group-item-warning" }}">
+    <div>
+      <strong>{{ n.title }}</strong> <span class="badge bg-secondary">{{ n.get_notif_type_display }}</span>
+      <p class="mb-0 small">{{ n.message }}</p>
+      <small class="text-muted">{{ n.created_at|date:"d M Y H:i" }}</small>
+    </div>
+    <form method="post" action="{% url 'notifications:notification_read' n.pk %}">{% csrf_token %}
+      {% if not n.is_read %}<button class="btn btn-sm btn-outline-success">Mark read</button>{% endif %}
+    </form>
+  </li>
+{% empty %}<li class="list-group-item text-muted text-center py-3">No notifications</li>{% endfor %}
+</ul>
+{% include "includes/pagination.html" %}
+{% endblock %}

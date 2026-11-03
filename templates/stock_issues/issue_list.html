@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Stock Issues - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Stock Issues</h3>
+  <a href="{% url 'stock_issues:issue_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Stock Issue</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Issue Number</th>
+          <th>Company</th>
+          <th>Issue Date</th>
+          <th>Purpose</th>
+          <th>Approval Status</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'issue_number' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_issue_number_display }}{% else %}{{ obj.issue_number|default:'-' }}{% endif %}</td>
+          <td>{% if 'company' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_company_display }}{% else %}{{ obj.company|default:'-' }}{% endif %}</td>
+          <td>{% if 'issue_date' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_issue_date_display }}{% else %}{{ obj.issue_date|default:'-' }}{% endif %}</td>
+          <td>{% if 'purpose' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_purpose_display }}{% else %}{{ obj.purpose|default:'-' }}{% endif %}</td>
+          <td>{% if 'approval_status' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_approval_status_display }}{% else %}{{ obj.approval_status|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'stock_issues:issue_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'stock_issues:issue_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

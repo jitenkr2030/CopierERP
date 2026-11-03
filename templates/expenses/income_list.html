@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Income{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-cash-coin"></i> Income</h3>
+  <a href="{% url 'expenses:income_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Income</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Number</th><th>Source</th><th>Date</th><th>Amount</th><th>Reference</th></tr></thead>
+    <tbody>{% for i in incomes %}
+      <tr><td>{{ i.income_number }}</td><td>{{ i.source }}</td><td>{{ i.income_date }}</td>
+        <td>₹ {{ i.amount|floatformat:2 }}</td><td>{{ i.reference|default:"-" }}</td></tr>
+    {% empty %}<tr><td colspan="5" class="text-muted text-center">No income records</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

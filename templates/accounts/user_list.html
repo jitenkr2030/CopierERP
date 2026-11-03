@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-people"></i> Users</h3>
+  <a href="{% url 'user_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New User</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>Emp ID</th><th>Username</th><th>Name</th><th>Email</th>
+        <th>Role</th><th>Active</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td><code>{{ u.employee_id|default:"-" }}</code></td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.get_full_name|default:u.username }}</td>
+        <td>{{ u.email|default:"-" }}</td>
+        <td><span class="badge bg-info">{{ u.get_role_display }}</span></td>
+        <td>{% if u.is_active %}<i class="bi bi-check-circle text-success"></i>{% else %}<i class="bi bi-x-circle text-danger"></i>{% endif %}</td>
+        <td>
+          <a href="{% url 'user_detail' u.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'user_edit' u.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-center text-muted py-3">No users yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-arrow-up-circle"></i> Supplier Payments</h3>
+  <a href="{% url 'payments:payment_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Payment</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light"><tr><th>#</th><th>Number</th><th>Supplier</th><th>Purchase</th><th>Date</th><th>Amount</th><th>Method</th><th>Reference</th><th>Actions</th></tr></thead>
+    <tbody>{% for p in payments %}
+      <tr><td>{{ forloop.counter }}</td>
+        <td>{{ p.payment_number }}</td><td>{{ p.supplier }}</td>
+        <td>{{ p.purchase|default:"-" }}</td><td>{{ p.payment_date }}</td>
+        <td>₹ {{ p.amount|floatformat:2 }}</td><td>{{ p.get_method_display }}</td>
+        <td>{{ p.reference|default:"-" }}</td>
+        <td><a href="{% url 'payments:payment_detail' p.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+            <a href="{% url 'payments:payment_edit' p.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a></td></tr>
+    {% empty %}<tr><td colspan="9" class="text-center text-muted py-3">No payments yet</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

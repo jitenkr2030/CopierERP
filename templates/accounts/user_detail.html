@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ user_obj }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-person"></i> {{ user_obj.display_name }}</h3>
+  <a href="{% url 'user_edit' user_obj.pk %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
+</div>
+<div class="card"><div class="card-body">
+  <div class="row">
+    <div class="col-md-3 text-center">
+      {% if user_obj.avatar %}<img src="{{ user_obj.avatar.url }}" class="img-thumbnail rounded-circle" style="width:120px">{% else %}<i class="bi bi-person-circle" style="font-size:6rem"></i>{% endif %}
+    </div>
+    <div class="col-md-9">
+      <table class="table table-borderless">
+        <tr><th>Employee ID:</th><td><code>{{ user_obj.employee_id|default:"-" }}</code></td></tr>
+        <tr><th>Username:</th><td>{{ user_obj.username }}</td></tr>
+        <tr><th>Email:</th><td>{{ user_obj.email|default:"-" }}</td></tr>
+        <tr><th>Phone:</th><td>{{ user_obj.phone|default:"-" }}</td></tr>
+        <tr><th>Role:</th><td><span class="badge bg-info">{{ user_obj.get_role_display }}</span></td></tr>
+        <tr><th>Joined:</th><td>{{ user_obj.date_joined|date:"d M Y" }}</td></tr>
+        <tr><th>Active:</th><td>{{ user_obj.is_active|yesno:"Yes,No" }}</td></tr>
+      </table>
+    </div>
+  </div>
+</div></div>
+<div class="card mt-3"><div class="card-header">Login history</div>
+  <div class="card-body">
+    <table class="table table-sm">
+      <thead><tr><th>Time</th><th>IP</th><th>User-agent</th><th>Success</th></tr></thead>
+      <tbody>{% for l in recent_logins %}
+        <tr><td>{{ l.login_time|date:"d M Y H:i" }}</td><td>{{ l.ip_address|default:"-" }}</td>
+          <td class="small text-muted">{{ l.user_agent|truncatechars:60 }}</td>
+          <td>{% if l.was_successful %}<span class="badge bg-success">OK</span>{% else %}<span class="badge bg-danger">Failed</span>{% endif %}</td></tr>
+      {% empty %}<tr><td colspan="4" class="text-muted">No logins yet</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

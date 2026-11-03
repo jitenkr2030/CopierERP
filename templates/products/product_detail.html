@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ product }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-box-seam"></i> {{ product }}</h3>
+  <div>
+    <a href="{% url 'products:product_edit' product.pk %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
+    <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card"><div class="card-body text-center">
+      {% if product.image %}<img src="{{ product.image.url }}" class="img-fluid" style="max-height:220px">{% else %}<i class="bi bi-image text-muted" style="font-size:8rem"></i>{% endif %}
+    </div></div>
+  </div>
+  <div class="col-md-8">
+    <div class="card"><div class="card-body">
+      <h5>{{ product.name }} <code>{{ product.code }}</code></h5>
+      <table class="table table-bordered table-sm mt-2">
+        <tr><th>Category</th><td>{{ product.category }}</td><th>Brand</th><td>{{ product.brand|default:"-" }}</td></tr>
+        <tr><th>Model</th><td>{{ product.model_no|default:"-" }}</td><th>SKU</th><td><code>{{ product.sku }}</code></td></tr>
+        <tr><th>Unit</th><td>{{ product.unit }}</td><th>HSN</th><td>{{ product.hsn_code|default:"-" }}</td></tr>
+        <tr><th>Purchase rate</th><td>₹ {{ product.purchase_rate }}</td><th>Sales rate</th><td>₹ {{ product.sales_rate }}</td></tr>
+        <tr><th>MRP</th><td>₹ {{ product.mrp }}</td><th>GST</th><td>{{ product.gst_rate }}%</td></tr>
+        <tr><th>Current stock</th><td><strong>{{ product.current_stock }}</strong></td>
+          <th>Min stock</th><td>{{ product.minimum_stock }}</td></tr>
+      </table>
+    </div></div>
+  </div>
+</div>
+<div class="card mt-3"><div class="card-header">Stock history</div>
+  <div class="card-body">
+    <table class="table table-sm">
+      <thead class="table-light"><tr><th>Date</th><th>Type</th><th>Ref</th><th>In</th><th>Out</th><th>Balance</th></tr></thead>
+      <tbody>{% for s in stock_history %}
+        <tr><td>{{ s.date }}</td><td>{{ s.get_transaction_type_display }}</td>
+          <td>{{ s.transaction_id|default:"-" }}</td>
+          <td class="text-success">{{ s.quantity_in|default:"0" }}</td>
+          <td class="text-danger">{{ s.quantity_out|default:"0" }}</td>
+          <td><strong>{{ s.balance_after }}</strong></td></tr>
+      {% empty %}<tr><td colspan="6" class="text-muted text-center">No stock movements yet</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

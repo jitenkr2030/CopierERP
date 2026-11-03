@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Dashboard - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="bi bi-speedometer2"></i> Dashboard</h3>
+  <div class="text-muted small">Today: {{ today|date:"d M Y" }}</div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6"><div class="card text-white bg-primary">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div><div class="small">Companies</div><div class="h3 mb-0">{{ companies_count }}</div></div>
+        <i class="bi bi-building fs-1 opacity-50"></i>
+      </div>
+      <a href="{% url 'companies:company_list' %}" class="text-white small">View all &rarr;</a>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card text-white bg-success">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div><div class="small">Customers</div><div class="h3 mb-0">{{ customers_count }}</div></div>
+        <i class="bi bi-people fs-1 opacity-50"></i>
+      </div>
+      <a href="{% url 'customers:customer_list' %}" class="text-white small">View all &rarr;</a>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card text-white bg-info">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div><div class="small">Suppliers</div><div class="h3 mb-0">{{ suppliers_count }}</div></div>
+        <i class="bi bi-truck fs-1 opacity-50"></i>
+      </div>
+      <a href="{% url 'suppliers:supplier_list' %}" class="text-white small">View all &rarr;</a>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card text-white bg-secondary">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div><div class="small">Products</div><div class="h3 mb-0">{{ products_count }}</div></div>
+        <i class="bi bi-box-seam fs-1 opacity-50"></i>
+      </div>
+      <a href="{% url 'products:product_list' %}" class="text-white small">View all &rarr;</a>
+    </div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6"><div class="card border-warning">
+    <div class="card-body">
+      <div class="small text-muted">Today's Purchases</div>
+      <div class="h4 mb-0">{{ today_purchases }}</div>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card border-success">
+    <div class="card-body">
+      <div class="small text-muted">Today's Sales</div>
+      <div class="h4 mb-0">{{ today_sales }}</div>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card border-info">
+    <div class="card-body">
+      <div class="small text-muted">Today's Stock Issues</div>
+      <div class="h4 mb-0">{{ today_stock_issues }}</div>
+    </div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card border-primary">
+    <div class="card-body">
+      <div class="small text-muted">Today's Calls</div>
+      <div class="h4 mb-0">{{ today_calls }}</div>
+    </div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6"><div class="card">
+    <div class="card-body"><div class="small text-muted">Total Stock Qty</div>
+    <div class="h5 mb-0">{{ total_stock_qty|intcomma }}</div></div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card">
+    <div class="card-body"><div class="small text-muted">Total Stock Value</div>
+    <div class="h5 mb-0">₹ {{ total_stock_value|floatformat:2|intcomma }}</div></div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card">
+    <div class="card-body"><div class="small text-muted">Low-stock Products</div>
+    <div class="h5 mb-0 text-warning">{{ products_low_count }}</div></div></div></div>
+  <div class="col-md-3 col-sm-6"><div class="card">
+    <div class="card-body"><div class="small text-muted">Pending Follow-ups</div>
+    <div class="h5 mb-0 text-danger">{{ pending_followups }}</div></div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4"><div class="card h-100">
+    <div class="card-header"><i class="bi bi-bag"></i> Recent Purchases</div>
+    <ul class="list-group list-group-flush">
+      {% for p in recent_purchases %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ p.purchase_number }} <small class="text-muted">{{ p.supplier }}</small></span>
+          <span class="badge bg-info">{{ p.status }}</span>
+        </li>
+      {% empty %}<li class="list-group-item text-muted">No purchases yet</li>{% endfor %}
+    </ul>
+  </div></div>
+  <div class="col-md-4"><div class="card h-100">
+    <div class="card-header"><i class="bi bi-receipt"></i> Recent Sales</div>
+    <ul class="list-group list-group-flush">
+      {% for s in recent_sales %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ s.sale_number }} <small class="text-muted">{{ s.customer }}</small></span>
+          <span class="badge bg-success">{{ s.status }}</span>
+        </li>
+      {% empty %}<li class="list-group-item text-muted">No sales yet</li>{% endfor %}
+    </ul>
+  </div></div>
+  <div class="col-md-4"><div class="card h-100">
+    <div class="card-header"><i class="bi bi-exclamation-triangle"></i> Low Stock</div>
+    <ul class="list-group list-group-flush">
+      {% for p in low_stock_list %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ p.name }}</span>
+          <span class="badge bg-warning text-dark">{{ p.current_stock }}/{{ p.minimum_stock }}</span>
+        </li>
+      {% empty %}<li class="list-group-item text-muted">All stocks above minimum</li>{% endfor %}
+    </ul>
+  </div></div>
+</div>
+{% endblock %}

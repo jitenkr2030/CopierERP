@@ -1,0 +1,6 @@
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-6"><input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search..."></div>
+  {% block extra_filters %}{% endblock %}
+  <div class="col-auto"><button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i></button></div>
+  <div class="col-auto"><a href="?" class="btn btn-outline-secondary">Reset</a></div>
+</form>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Companies - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Companies</h3>
+  <a href="{% url 'companies:company_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Companie</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Contact Person</th>
+          <th>Phone</th>
+          <th>City</th>
+          <th>Gstin</th>
+          <th>Is Active</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'code' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_code_display }}{% else %}{{ obj.code|default:'-' }}{% endif %}</td>
+          <td>{% if 'name' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_name_display }}{% else %}{{ obj.name|default:'-' }}{% endif %}</td>
+          <td>{% if 'category' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_category_display }}{% else %}{{ obj.category|default:'-' }}{% endif %}</td>
+          <td>{% if 'contact_person' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_contact_person_display }}{% else %}{{ obj.contact_person|default:'-' }}{% endif %}</td>
+          <td>{% if 'phone' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_phone_display }}{% else %}{{ obj.phone|default:'-' }}{% endif %}</td>
+          <td>{% if 'city' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_city_display }}{% else %}{{ obj.city|default:'-' }}{% endif %}</td>
+          <td>{% if 'gstin' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_gstin_display }}{% else %}{{ obj.gstin|default:'-' }}{% endif %}</td>
+          <td>{% if 'is_active' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_is_active_display }}{% else %}{{ obj.is_active|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'companies:company_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'companies:company_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

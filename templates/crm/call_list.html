@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Calls - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Calls</h3>
+  <a href="{% url 'crm:call_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Call</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Call Id</th>
+          <th>Company</th>
+          <th>Contact Person</th>
+          <th>Call Date</th>
+          <th>Direction</th>
+          <th>Status</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'call_id' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_call_id_display }}{% else %}{{ obj.call_id|default:'-' }}{% endif %}</td>
+          <td>{% if 'company' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_company_display }}{% else %}{{ obj.company|default:'-' }}{% endif %}</td>
+          <td>{% if 'contact_person' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_contact_person_display }}{% else %}{{ obj.contact_person|default:'-' }}{% endif %}</td>
+          <td>{% if 'call_date' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_call_date_display }}{% else %}{{ obj.call_date|default:'-' }}{% endif %}</td>
+          <td>{% if 'direction' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_direction_display }}{% else %}{{ obj.direction|default:'-' }}{% endif %}</td>
+          <td>{% if 'status' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_status_display }}{% else %}{{ obj.status|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'crm:call_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'crm:call_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

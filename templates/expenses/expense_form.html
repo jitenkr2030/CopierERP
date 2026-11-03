@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ title|default:"Expense" }}{% endblock %}
+{% block content %}
+<h3><i class="bi bi-pencil"></i> {{ title|default:"Expense" }}</h3>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="card mt-3"><div class="card-body">
+    <div class="row g-3">
+      {% for field in form %}
+      <div class="col-md-{% if 'description' in field.name %}12{% else %}4{% endif %}">
+        <label class="form-label">{{ field.label }}</label>{{ field }}
+      </div>
+      {% endfor %}
+    </div>
+  </div></div>
+  <div class="mt-3">
+    <button class="btn btn-success"><i class="bi bi-check-lg"></i> Save</button>
+    <a href="{% url 'expenses:expense_list' %}" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

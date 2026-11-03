@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ payment }}{% endblock %}
+{% block content %}
+<h3><i class="bi bi-arrow-up-circle"></i> {{ payment }}</h3>
+<div class="card"><div class="card-body">
+  <table class="table table-bordered">
+    <tr><th>Payment #</th><td>{{ payment.payment_number }}</td><th>Supplier</th><td>{{ payment.supplier }}</td></tr>
+    <tr><th>Date</th><td>{{ payment.payment_date }}</td><th>Amount</th><td>₹ {{ payment.amount|floatformat:2 }}</td></tr>
+    <tr><th>Method</th><td>{{ payment.get_method_display }}</td><th>Reference</th><td>{{ payment.reference|default:"-" }}</td></tr>
+    <tr><th>Cheque #</th><td>{{ payment.cheque_no|default:"-" }}</td><th>Bank</th><td>{{ payment.bank|default:"-" }}</td></tr>
+  </table>
+</div></div>
+{% endblock %}

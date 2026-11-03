@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Accounting{% endblock %}
+{% block content %}
+<h3><i class="bi bi-calculator"></i> Accounting (Django Ledger)</h3>
+{% if not entity %}
+<div class="alert alert-warning">
+  <h5 class="alert-heading">No accounting entity yet</h5>
+  <p>Click below to create a django_ledger Entity and a default chart of accounts.</p>
+  <a href="{% url 'accounting:setup_ledger' %}" class="btn btn-primary"><i class="bi bi-magic"></i> Initialize Ledger</a>
+</div>
+{% else %}
+<div class="card"><div class="card-body">
+  <h5>Active Entity: {{ entity.name }} <code>{{ entity.entity_id }}</code></h5>
+  <p class="mb-0"><a href="{% url 'accounting:entry_map_list' %}" class="btn btn-outline-info btn-sm">View posted entries</a></p>
+</div></div>
+{% endif %}
+<p class="text-muted mt-3">Note: every approved purchase / confirmed sale / recorded payment posts an automatic journal entry into django_ledger. Use Django Admin /ledger/ to access trial balance, P&L, balance sheet, etc.</p>
+{% endblock %}

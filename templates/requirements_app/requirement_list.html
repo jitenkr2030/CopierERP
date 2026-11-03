@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Requirements - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Requirements</h3>
+  <a href="{% url 'requirements_app:requirement_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Requirement</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Requirement Number</th>
+          <th>Company</th>
+          <th>Requirement Date</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'requirement_number' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_requirement_number_display }}{% else %}{{ obj.requirement_number|default:'-' }}{% endif %}</td>
+          <td>{% if 'company' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_company_display }}{% else %}{{ obj.company|default:'-' }}{% endif %}</td>
+          <td>{% if 'requirement_date' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_requirement_date_display }}{% else %}{{ obj.requirement_date|default:'-' }}{% endif %}</td>
+          <td>{% if 'priority' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_priority_display }}{% else %}{{ obj.priority|default:'-' }}{% endif %}</td>
+          <td>{% if 'status' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_status_display }}{% else %}{{ obj.status|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'requirements_app:requirement_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'requirements_app:requirement_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

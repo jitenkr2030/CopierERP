@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Products - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Products</h3>
+  <a href="{% url 'products:product_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Product</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Brand</th>
+          <th>Sku</th>
+          <th>Current Stock</th>
+          <th>Minimum Stock</th>
+          <th>Sales Rate</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'code' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_code_display }}{% else %}{{ obj.code|default:'-' }}{% endif %}</td>
+          <td>{% if 'name' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_name_display }}{% else %}{{ obj.name|default:'-' }}{% endif %}</td>
+          <td>{% if 'category' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_category_display }}{% else %}{{ obj.category|default:'-' }}{% endif %}</td>
+          <td>{% if 'brand' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_brand_display }}{% else %}{{ obj.brand|default:'-' }}{% endif %}</td>
+          <td>{% if 'sku' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_sku_display }}{% else %}{{ obj.sku|default:'-' }}{% endif %}</td>
+          <td>{% if 'current_stock' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_current_stock_display }}{% else %}{{ obj.current_stock|default:'-' }}{% endif %}</td>
+          <td>{% if 'minimum_stock' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_minimum_stock_display }}{% else %}{{ obj.minimum_stock|default:'-' }}{% endif %}</td>
+          <td>{% if 'sales_rate' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_sales_rate_display }}{% else %}{{ obj.sales_rate|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'products:product_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'products:product_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

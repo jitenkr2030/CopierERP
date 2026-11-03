@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}HSN Codes{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-upc-scan"></i> HSN Codes</h3>
+  <a href="{% url 'gst:hsn_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Code</th><th>Description</th><th>GST Rate</th></tr></thead>
+    <tbody>{% for h in hsns %}
+      <tr><td><code>{{ h.code }}</code></td><td>{{ h.description }}</td><td>{{ h.gst_rate|default:"-" }}</td></tr>
+    {% empty %}<tr><td colspan="3" class="text-muted text-center">No HSN codes</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ call }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-telephone"></i> {{ call }}</h3>
+  <div>
+    <a href="{% url 'crm:call_edit' call.pk %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
+    <a href="{% url 'crm:call_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-bordered">
+    <tr><th>Call ID</th><td>{{ call.call_id }}</td><th>Company</th><td>{{ call.company }}</td></tr>
+    <tr><th>Contact</th><td>{{ call.contact_person }}</td><th>Phone</th><td>{{ call.phone }}</td></tr>
+    <tr><th>Date</th><td>{{ call.call_date }} {{ call.call_time|default:"" }}</td><th>Direction</th><td>{{ call.get_direction_display }}</td></tr>
+    <tr><th>Purpose</th><td>{{ call.purpose }}</td><th>Status</th><td><span class="badge bg-info">{{ call.get_status_display }}</span></td></tr>
+    <tr><th>Assigned to</th><td>{{ call.assigned_to|default:"-" }}</td><th>Next follow-up</th><td>{{ call.next_follow_up|default:"-" }}</td></tr>
+    <tr><th colspan="2">Notes</th><td colspan="2">{{ call.notes }}</td></tr>
+  </table>
+</div></div>
+<div class="card mt-3"><div class="card-header">Follow-ups</div>
+  <div class="card-body">
+    <ul class="list-group mb-3">{% for f in followups %}
+      <li class="list-group-item">
+        <strong>{{ f.date }}</strong> by {{ f.done_by|default:"-" }}
+        <p class="mb-1">{{ f.notes }}</p>
+        <small class="text-muted">Next follow-up: {{ f.next_follow_up|default:"-" }}</small>
+      </li>
+    {% empty %}<li class="list-group-item text-muted">No follow-ups yet</li>{% endfor %}</ul>
+    <form method="post" action="{% url 'crm:call_followup_add' call.pk %}">
+      {% csrf_token %}
+      <div class="row g-2">
+        <div class="col-md-3">{{ followup_form.date }}</div>
+        <div class="col-md-3">{{ followup_form.next_follow_up }}</div>
+        <div class="col-md-6">{{ followup_form.notes }}</div>
+        <div class="col-12"><button class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> Add follow-up</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

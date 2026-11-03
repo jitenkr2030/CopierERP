@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ company }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-building"></i> {{ company.name }}</h3>
+  <div>
+    <a href="{% url 'companies:company_edit' company.pk %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i> Edit</a>
+    <a href="{% url 'companies:company_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-bordered">
+    <tr><th>Code</th><td><code>{{ company.code }}</code></td><th>Category</th><td>{{ company.get_category_display }}</td></tr>
+    <tr><th>Contact</th><td>{{ company.contact_person }} ({{ company.designation }})</td><th>Phone</th><td>{{ company.phone }}</td></tr>
+    <tr><th>Email</th><td>{{ company.email|default:"-" }}</td><th>GSTIN</th><td>{{ company.gstin|default:"-" }}</td></tr>
+    <tr><th>Address</th><td colspan="3">{{ company.address_line1 }} {{ company.address_line2 }}, {{ company.city }}, {{ company.state }} {{ company.pincode }}</td></tr>
+    <tr><th>Credit Limit</th><td>₹ {{ company.credit_limit }}</td><th>Payment Terms</th><td>{{ company.payment_terms_days }} days</td></tr>
+  </table>
+</div></div>
+<div class="row g-3 mt-1">
+  <div class="col-md-6"><div class="card h-100"><div class="card-header">Recent Purchases</div>
+    <ul class="list-group list-group-flush">{% for p in purchases %}
+      <li class="list-group-item"><a href="{% url 'purchases:purchase_detail' p.pk %}">{{ p.purchase_number }}</a> - {{ p.purchase_date }}</li>
+    {% empty %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul>
+  </div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-header">Recent Sales</div>
+    <ul class="list-group list-group-flush">{% for s in sales %}
+      <li class="list-group-item"><a href="{% url 'sales:sale_detail' s.pk %}">{{ s.sale_number }}</a> - {{ s.sale_date }}</li>
+    {% empty %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul>
+  </div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-header">Recent Stock Issues</div>
+    <ul class="list-group list-group-flush">{% for i in issues %}
+      <li class="list-group-item"><a href="{% url 'stock_issues:issue_detail' i.pk %}">{{ i.issue_number }}</a> - {{ i.issue_date }}</li>
+    {% empty %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul>
+  </div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-header">Recent Calls</div>
+    <ul class="list-group list-group-flush">{% for c in calls %}
+      <li class="list-group-item"><a href="{% url 'crm:call_detail' c.pk %}">{{ c.call_id }}</a> - {{ c.call_date }}</li>
+    {% empty %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul>
+  </div></div>
+</div>
+{% endblock %}

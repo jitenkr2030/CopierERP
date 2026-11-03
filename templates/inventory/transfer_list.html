@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Stock Transfers{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-truck"></i> Stock Transfers</h3>
+  <a href="{% url 'inventory:transfer_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Date</th><th>Product</th><th>From</th><th>To</th><th>Qty</th></tr></thead>
+    <tbody>{% for t in transfers %}
+      <tr><td>{{ t.date }}</td><td>{{ t.product }}</td>
+        <td>{{ t.from_location }}</td><td>{{ t.to_location }}</td><td>{{ t.quantity }}</td></tr>
+    {% empty %}<tr><td colspan="5" class="text-muted text-center">No transfers</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

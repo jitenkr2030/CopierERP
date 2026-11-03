@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load gst_filters %}
+{% block title %}GSTR-3B{% endblock %}
+{% block content %}
+<h3><i class="bi bi-file-earmark-bar-graph"></i> GSTR-3B Summary</h3>
+<div class="card"><div class="card-body">
+  <table class="table table-bordered">
+    <tr><th>Total Sales</th><td>₹ {{ sales_total|floatformat:2 }}</td></tr>
+    <tr><th>Output GST (Sales)</th><td>₹ {{ output_gst|floatformat:2 }}</td></tr>
+    <tr><th>Total Purchases</th><td>₹ {{ purchase_total|floatformat:2 }}</td></tr>
+    <tr><th>Input GST (Purchases)</th><td>₹ {{ input_gst|floatformat:2 }}</td></tr>
+    <tr><th>Net GST Payable</th><td><strong>₹ {{ output_gst|subtract:input_gst|floatformat:2 }}</strong></td></tr>
+  </table>
+</div></div>
+{% endblock %}

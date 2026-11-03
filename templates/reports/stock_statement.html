@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Stock Statement{% endblock %}
+{% block content %}
+<h3>Stock Statement</h3>
+<form method="get" class="row g-2 mb-3">
+          <div class="col-md-3"><input type="date" name="from" value="{{ request.GET.from }}" class="form-control" placeholder="From"></div>
+          <div class="col-md-3"><input type="date" name="to" value="{{ request.GET.to }}" class="form-control" placeholder="To"></div>
+          <div class="col-md-2"><button class="btn btn-outline-primary">Filter</button></div>
+        </form>
+<div class="card"><div class="card-body">
+<table class="table table-sm">
+          <thead class="table-light"><tr><th>Product</th><th>Opening</th><th>Purchased</th><th>Issued</th></tr></thead>
+          <tbody>{% for r in rows %}
+            <tr><td>{{ r.product__code }} - {{ r.product__name }}</td>
+              <td>{{ r.opening|default:0 }}</td><td>{{ r.purchased|default:0 }}</td>
+              <td>{{ r.issued|default:0 }}</td></tr>
+          {% empty %}<tr><td colspan="4" class="text-muted text-center">No data</td></tr>{% endfor %}
+          </tbody>
+        </table>
+</div></div>
+{% endblock %}

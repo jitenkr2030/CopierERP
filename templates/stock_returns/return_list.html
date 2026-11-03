@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Stock Returns - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-list-ul"></i> Stock Returns</h3>
+  <a href="{% url 'stock_returns:return_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Stock Return</a>
+</div>
+{% include "includes/search_form.html" %}
+<div class="card"><div class="card-body">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr><th>#</th>
+          <th>Return Number</th>
+          <th>Company</th>
+          <th>Return Date</th>
+          <th>Return Type</th>
+          <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in page_obj %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+          <td>{% if 'return_number' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_return_number_display }}{% else %}{{ obj.return_number|default:'-' }}{% endif %}</td>
+          <td>{% if 'company' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_company_display }}{% else %}{{ obj.company|default:'-' }}{% endif %}</td>
+          <td>{% if 'return_date' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_return_date_display }}{% else %}{{ obj.return_date|default:'-' }}{% endif %}</td>
+          <td>{% if 'return_type' in 'category direction purpose payment_method status sale_type return_type approval_status' %}{{ obj.get_return_type_display }}{% else %}{{ obj.return_type|default:'-' }}{% endif %}</td>
+        <td>
+          <a href="{% url 'stock_returns:return_detail' obj.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+          <a href="{% url 'stock_returns:return_edit' obj.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ cols|length|default:5 }}" class="text-center text-muted py-3">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

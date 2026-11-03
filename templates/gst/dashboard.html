@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}GST Dashboard{% endblock %}
+{% block content %}
+<h3><i class="bi bi-percent"></i> GST Management</h3>
+<div class="row g-3 mb-3">
+  <div class="col-md-3"><div class="card"><div class="card-body"><div class="small text-muted">Purchase GST (MTD)</div>
+    <div class="h5">₹ {{ purchase_gst|floatformat:2 }}</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><div class="small text-muted">Sales GST (MTD)</div>
+    <div class="h5">₹ {{ sales_gst|floatformat:2 }}</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><div class="small text-muted">HSN codes</div>
+    <div class="h5">{{ hsn_count }}</div></div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body"><div class="small text-muted">GST rates</div>
+    <div class="h5">{{ rates|length }}</div></div></div></div>
+</div>
+<div class="card"><div class="card-body">
+  <h5>Settings</h5>
+  {% if settings %}
+  <p>{{ settings.business_name }} &middot; GSTIN: <code>{{ settings.gstin }}</code> &middot; {{ settings.state }}</p>
+  {% else %}
+  <p class="text-muted">No GST settings yet.</p>
+  {% endif %}
+  <a href="{% url 'gst:settings' %}" class="btn btn-outline-primary btn-sm">Edit settings</a>
+</div></div>
+<div class="card mt-3"><div class="card-body">
+  <h5>Returns</h5>
+  <a href="{% url 'gst:gstr1' %}" class="btn btn-outline-info btn-sm">GSTR-1 (Sales)</a>
+  <a href="{% url 'gst:gstr3b' %}" class="btn btn-outline-info btn-sm">GSTR-3B (Summary)</a>
+  <p class="text-muted small mt-2">Note: This is report preparation only — does not file returns with the GST portal.</p>
+</div></div>
+{% endblock %}

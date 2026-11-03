@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Outstanding{% endblock %}
+{% block content %}
+<h3>Outstanding</h3>
+
+<div class="card"><div class="card-body">
+<div class="row g-3">
+          <div class="col-md-6"><div class="card"><div class="card-header">Customer Receivables</div>
+            <div class="card-body"><table class="table table-sm">
+              <thead><tr><th>Company</th><th>Balance</th></tr></thead>
+              <tbody>{% for r in customers %}<tr><td>{{ r.company }}</td><td>₹ {{ r.balance|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="2" class="text-muted">None</td></tr>{% endfor %}</tbody>
+            </table></div></div></div>
+          <div class="col-md-6"><div class="card"><div class="card-header">Supplier Payables</div>
+            <div class="card-body"><table class="table table-sm">
+              <thead><tr><th>Company</th><th>Balance</th></tr></thead>
+              <tbody>{% for r in suppliers %}<tr><td>{{ r.company }}</td><td>₹ {{ r.balance|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="2" class="text-muted">None</td></tr>{% endfor %}</tbody>
+            </table></div></div></div>
+        </div>
+</div></div>
+{% endblock %}

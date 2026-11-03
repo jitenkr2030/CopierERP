@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Accounting Entries{% endblock %}
+{% block content %}
+<h3><i class="bi bi-list-check"></i> Posted Journal Entries</h3>
+<div class="card mt-3"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Source</th><th>Source PK</th><th>Journal Entry</th><th>Posted by</th><th>Posted at</th><th>Reversed</th></tr></thead>
+    <tbody>{% for e in entries %}
+      <tr><td>{{ e.source_model }}</td><td>{{ e.source_pk }}</td>
+        <td><code>{{ e.journal_entry_id|default:"-" }}</code></td>
+        <td>{{ e.posted_by|default:"-" }}</td><td>{{ e.posted_at|date:"d M Y H:i" }}</td>
+        <td>{{ e.is_reversed|yesno:"Yes,No" }}</td></tr>
+    {% empty %}<tr><td colspan="6" class="text-muted text-center">No entries posted yet</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

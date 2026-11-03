@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ title|default:"Stock Issues" }} - Copier ERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3><i class="bi bi-pencil"></i> {{ title|default:"Stock Issues" }}</h3>
+</div>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="card"><div class="card-body">
+    <div class="row g-3">
+      {% for field in form %}
+      <div class="col-md-{% if 'notes' in field.name or 'description' in field.name or 'address' in field.name %}12{% elif 'file' in field.field.widget.input_type|default:'' or 'clearable' in field.field.widget|default:''|slice:':8' %}12{% else %}4{% endif %}">
+        <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+        {{ field }}
+        {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div></div>
+
+<div class="card mt-3">
+  <div class="card-header"><i class="bi bi-card-list"></i> Items</div>
+  <div class="card-body">
+    {{ items.management_form }}
+    <table class="table table-sm">
+      <thead class="table-light">
+        <tr>{% for field in items.empty_form.visible_fields %}<th>{{ field.label }}</th>{% endfor %}<th>Delete</th></tr>
+      </thead>
+      <tbody>
+        {% for f in items.forms %}
+        <tr>{% for field in f.visible_fields %}<td>{{ field }}</td>{% endfor %}
+            <td>{% if f.instance.pk %}{{ f.DELETE }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addRow()">
+      <i class="bi bi-plus-lg"></i> Add row
+    </button>
+  </div>
+</div>
+<script>
+function addRow() {
+  const totalForms = document.getElementById('id_items-TOTAL_FORMS');
+  let formNum = parseInt(totalForms.value);
+  const emptyRowHtml = document.querySelector('#id_items-TOTAL_FORMS')
+      .closest('table').querySelector('tbody tr:first-child').outerHTML;
+  // Build a new row from the empty_form template (kept simple for static delivery;
+  // for advanced usage, use django-formset dynamic JS).
+  const newRow = emptyRowHtml.replace(/items-__prefix__/g, 'items-' + formNum);
+  document.querySelector('#id_items-TOTAL_FORMS').closest('table')
+          .querySelector('tbody').insertAdjacentHTML('beforeend', newRow);
+  totalForms.value = formNum + 1;
+}
+</script>
+  <div class="mt-3">
+    <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Save</button>
+    <a href="{% url 'expenses:expense_list' %}" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

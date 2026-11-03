@@ -1,0 +1,6 @@
+body { background: #f8f9fa; }
+.card { box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.05); }
+.navbar-brand { font-weight: 700; }
+.dropdown-item:hover { background: #e9ecef; }
+.table th { font-weight: 600; }
+.footer { font-size: 0.85rem; }

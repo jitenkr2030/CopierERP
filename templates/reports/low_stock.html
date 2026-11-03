@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Low Stock{% endblock %}
+{% block content %}
+<h3>Low Stock</h3>
+
+<div class="card"><div class="card-body">
+<table class="table table-sm">
+          <thead class="table-light"><tr><th>Code</th><th>Name</th><th>Current</th><th>Min</th></tr></thead>
+          <tbody>{% for r in rows %}<tr><td>{{ r.code }}</td><td>{{ r.name }}</td>
+            <td><strong>{{ r.current_stock }}</strong></td><td>{{ r.minimum_stock }}</td></tr>
+          {% empty %}<tr><td colspan="4" class="text-muted text-center">All stocks above minimum</td></tr>{% endfor %}</tbody>
+        </table>
+</div></div>
+{% endblock %}

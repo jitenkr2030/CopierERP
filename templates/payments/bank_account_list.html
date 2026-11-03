@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Bank Accounts{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-bank"></i> Bank Accounts</h3>
+  <a href="{% url 'payments:bank_account_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Name</th><th>Bank</th><th>A/C #</th><th>IFSC</th><th>Branch</th><th>Active</th><th>Actions</th></tr></thead>
+    <tbody>{% for a in accounts %}
+      <tr><td>{{ a.name }}</td><td>{{ a.bank_name }}</td><td>{{ a.account_number }}</td>
+        <td>{{ a.ifsc|default:"-" }}</td><td>{{ a.branch|default:"-" }}</td>
+        <td>{{ a.is_active|yesno:"Yes,No" }}</td>
+        <td><a href="{% url 'payments:bank_account_edit' a.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a></td></tr>
+    {% empty %}<tr><td colspan="7" class="text-muted text-center">No bank accounts</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

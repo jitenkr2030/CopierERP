@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}GST Rates{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-percent"></i> GST Rates</h3>
+  <a href="{% url 'gst:rate_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Rate</th><th>Description</th><th>Active</th></tr></thead>
+    <tbody>{% for r in rates %}
+      <tr><td><strong>{{ r.rate }}%</strong></td><td>{{ r.description|default:"-" }}</td>
+        <td>{{ r.is_active|yesno:"Yes,No" }}</td></tr>
+    {% empty %}<tr><td colspan="3" class="text-muted text-center">No rates</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Receipts{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-arrow-down-circle"></i> Customer Receipts</h3>
+  <a href="{% url 'payments:receipt_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Receipt</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Number</th><th>Customer</th><th>Date</th><th>Amount</th><th>Method</th><th>Reference</th><th>Actions</th></tr></thead>
+    <tbody>{% for r in receipts %}
+      <tr><td>{{ r.receipt_number }}</td><td>{{ r.customer }}</td><td>{{ r.receipt_date }}</td>
+        <td>₹ {{ r.amount|floatformat:2 }}</td><td>{{ r.get_method_display }}</td><td>{{ r.reference|default:"-" }}</td>
+        <td><a href="{% url 'payments:receipt_detail' r.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+            <a href="{% url 'payments:receipt_edit' r.pk %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a></td></tr>
+    {% empty %}<tr><td colspan="7" class="text-muted text-center">No receipts</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% include "includes/pagination.html" %}
+{% endblock %}

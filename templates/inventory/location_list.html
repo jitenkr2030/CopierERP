@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Locations{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3><i class="bi bi-geo-alt"></i> Locations</h3>
+  <a href="{% url 'inventory:location_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New</a>
+</div>
+<div class="card"><div class="card-body">
+  <table class="table table-sm">
+    <thead class="table-light"><tr><th>Code</th><th>Name</th><th>Address</th><th>Active</th></tr></thead>
+    <tbody>{% for l in locations %}
+      <tr><td><code>{{ l.code }}</code></td><td>{{ l.name }}</td>
+        <td>{{ l.address|default:"-" }}</td>
+        <td>{{ l.is_active|yesno:"Yes,No" }}</td></tr>
+    {% empty %}<tr><td colspan="4" class="text-muted text-center py-3">No locations</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

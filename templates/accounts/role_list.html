@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Roles & Permissions{% endblock %}
+{% block content %}
+<h3><i class="bi bi-shield-lock"></i> Roles & Permissions</h3>
+<div class="card mt-3"><div class="card-body">
+  <table class="table table-hover">
+    <thead><tr><th>Role</th><th>Code</th><th>Modules</th><th>Users</th></tr></thead>
+    <tbody>{% for r in roles %}
+      <tr><td>{{ r.label }}</td><td><code>{{ r.code }}</code></td>
+        <td>{% for m in r.modules %}<span class="badge bg-info">{{ m }}</span> {% endfor %}</td>
+        <td>{{ r.user_count }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+</div></div>
+{% endblock %}
