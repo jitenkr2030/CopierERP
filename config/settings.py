@@ -19,7 +19,9 @@ except Exception:
 
 SECRET_KEY = _env("SECRET_KEY", "django-insecure-copier-erp-dev-key-change-me")
 DEBUG = _env("DEBUG", "True").lower() in ("1", "true", "yes")
-ALLOWED_HOSTS = [h.strip() for h in _env("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
+# On PaaS (HostKB, Railway, etc.) ALLOWED_HOSTS must include the app's hostname.
+# Using "*" works for testing; tighten in real production.
+ALLOWED_HOSTS = [h.strip() for h in _env("ALLOWED_HOSTS", "*").split(",") if h.strip()]
 
 # ---------- applications ----------
 INSTALLED_APPS = [
@@ -31,11 +33,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
 
-    # 3rd-party
     "django_ledger",
     "rest_framework",
 
-    # local apps (declared in dependency order)
     "accounts",
     "audit",
     "notifications",
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -92,25 +93,30 @@ WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
 # ---------- database ----------
-DB_ENGINE = _env("DB_ENGINE", "sqlite")
-if DB_ENGINE == "postgresql":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": _env("DB_NAME", "copier_erp"),
-            "USER": _env("DB_USER", "postgres"),
-            "PASSWORD": _env("DB_PASSWORD", ""),
-            "HOST": _env("DB_HOST", "127.0.0.1"),
-            "PORT": _env("DB_PORT", "5432"),
-        }
-    }
+# 1) If DATABASE_URL is set (PostgreSQL add-on), use it.
+# 2) Else if /tmp is writable (typical on PaaS), put SQLite there.
+# 3) Else fall back to BASE_DIR (dev).
+DATABASE_URL = _env("DATABASE_URL", "")
+if DATABASE_URL:
+    import dj_database_url
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 else:
+    # Pick a writable path. /data is sometimes a mounted volume on PaaS,
+    # otherwise /tmp is always writable on Linux containers.
+    candidates = [
+        Path("/data"),
+        Path("/tmp"),
+        BASE_DIR,
+    ]
+    db_dir = next((p for p in candidates if p.exists() and os.access(p, os.W_OK)), BASE_DIR)
+    db_path = db_dir / "copier_erp.sqlite3"
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": str(db_path),
         }
     }
+    print(f"[settings] Using SQLite at: {db_path}")
 
 # ---------- auth ----------
 AUTH_USER_MODEL = "accounts.User"
@@ -147,10 +153,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024
 
 # ---------- django-ledger ----------
-DJANGO_LEDGER = {
-    "DEFAULT_CURRENCY": "INR",
-}
-# Opt in to the new django-ledger API (silences deprecation warning).
+DJANGO_LEDGER = {"DEFAULT_CURRENCY": "INR"}
 DJANGO_LEDGER_USE_DEPRECATED_BEHAVIOR = False
 
 # ---------- REST framework ----------
@@ -165,5 +168,22 @@ REST_FRAMEWORK = {
 
 # ---------- app-specific ----------
 LOW_STOCK_THRESHOLD_DEFAULT = 10
-SESSION_COOKIE_AGE = 60 * 60 * 8  # 8h
-CSRF_TRUSTED_ORIGINS = ["https://*.localhost", "https://127.0.0.1"]
+SESSION_COOKIE_AGE = 60 * 60 * 8
+
+# Allow the HostKB public URL for CSRF
+CSRF_TRUSTED_ORIGINS = []
+hostkb_origin = _env("HOSTKB_ORIGIN", "")
+if hostkb_origin:
+    CSRF_TRUSTED_ORIGINS.append(hostkb_origin)
+
+# ---------- production hardening ----------
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+# WhiteNoise for static files in production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
